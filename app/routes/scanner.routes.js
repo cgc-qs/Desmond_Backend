@@ -5,6 +5,8 @@ module.exports = app => {
   var router = require("express").Router();
   // SignUp
   router.post("/signUp", loginInfo.signUp);
+  // Login
+  router.get("/login", loginInfo.login);
 
   // Create a new Tutorial
   router.post("/", AccountInfo.create);
@@ -19,13 +21,13 @@ module.exports = app => {
   router.get("/:id", AccountInfo.findOne);
 
   // Update a Tutorial with id
-  router.put("/:id", AccountInfo.update);
+  router.post("/update/:id", AccountInfo.update);
 
   // Delete a Tutorial with id
-  router.delete("/:id", AccountInfo.delete);
+  router.post("/delete/:id", AccountInfo.delete);
 
   // Delete  a new Tutorial
-  router.delete("/", AccountInfo.deleteAll);
+  router.post("/deleteAll", AccountInfo.deleteAll);
 
   app.use("/api/scanner", router);
 };

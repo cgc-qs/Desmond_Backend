@@ -4,7 +4,7 @@ const LoginInfo = db.loginInfo;
 exports.signUp = (req, res) => {
 
     // Validate request
-    if (!req.body.loginName) {
+    if (!req.body.loginName && !req.body.loginEmail) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
@@ -29,6 +29,43 @@ exports.signUp = (req, res) => {
                     err.message || "Some error occurred while signUP."
             });
         });
+}
+exports.login = (req, res) => {
+    const name = req.query.loginName;
+    const email = req.query.loginEmail;
+    const password = req.query.loginPassWord;
 
+    var condition1 = {
+        loginName: name,
+        loginPassWord: password
+    };
+
+    var condition2 = {
+        loginEmail: email,
+        loginPassWord: password
+    };
+
+    var condition = name ? condition1 : condition2;
+
+    LoginInfo.find(condition)
+        .then(data => {
+            if (data.length > 0)
+                res.status(200).send({
+                    message:
+                        "Login Success"
+                });
+            else
+                res.status(404).send({
+                    message:
+                        "Login Failed"
+                });
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while Login."
+            });
+        });
 
 }

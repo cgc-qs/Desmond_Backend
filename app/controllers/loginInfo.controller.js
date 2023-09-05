@@ -26,7 +26,7 @@ exports.signUp = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the AccountInfo."
+                    err.message || "Some error occurred while signUP."
             });
         });
 

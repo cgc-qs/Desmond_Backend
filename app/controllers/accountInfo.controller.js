@@ -1,7 +1,7 @@
 const db = require("../models");
-const Tutorial = db.tutorials;
+const AccountInfo = db.accountInfo;
 
-// Create and Save a new Tutorial
+// Create and Save a new AccountInfo
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.brokerName) {
@@ -9,8 +9,8 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Tutorial
-  const tutorial = new Tutorial({
+  // Create a AccountInfo
+  const account = new AccountInfo({
     brokerName: req.body.brokerName,
     accountNumber: req.body.accountNumber,
     currentEquity: req.body.currentEquity,
@@ -22,16 +22,16 @@ exports.create = (req, res) => {
     shortSwap: req.body.shortSwap
   });
 
-  // Save Tutorial in the database
-  tutorial
-    .save(tutorial)
+  // Save AccountInfo in the database
+  account
+    .save(account)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial."
+          err.message || "Some error occurred while creating the AccountInfo."
       });
     });
 };
@@ -56,7 +56,7 @@ exports.findAll = (req, res) => {
       accountNumber: accNum
     };
 
-  Tutorial.find(condition)
+  AccountInfo.find(condition)
     .then(data => {
       res.send(data);
     })
@@ -68,24 +68,24 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Tutorial with an id
+// Find a single AccountInfo with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Tutorial.findById(id)
+  AccountInfo.findById(id)
     .then(data => {
       if (!data)
-        res.status(404).send({ message: "Not found Tutorial with id " + id });
+        res.status(404).send({ message: "Not found AccountInfo with id " + id });
       else res.send(data);
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving Tutorial with id=" + id });
+        .send({ message: "Error retrieving AccountInfo with id=" + id });
     });
 };
 
-// Update a Tutorial by the id in the request
+// Update a AccountInfo by the id in the request
 exports.update = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
@@ -95,47 +95,47 @@ exports.update = (req, res) => {
 
   const id = req.params.id;
 
-  Tutorial.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  AccountInfo.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot update AccountInfo with id=${id}. Maybe AccountInfo was not found!`
         });
-      } else res.send({ message: "Tutorial was updated successfully." });
+      } else res.send({ message: "AccountInfo was updated successfully." });
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Tutorial with id=" + id
+        message: "Error updating AccountInfo with id=" + id
       });
     });
 };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a AccountInfo with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Tutorial.findByIdAndRemove(id, { useFindAndModify: false })
+  AccountInfo.findByIdAndRemove(id, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot delete AccountInfo with id=${id}. Maybe AccountInfo was not found!`
         });
       } else {
         res.send({
-          message: "Tutorial was deleted successfully!"
+          message: "AccountInfo was deleted successfully!"
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Tutorial with id=" + id
+        message: "Could not delete AccountInfo with id=" + id
       });
     });
 };
 
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
-  Tutorial.deleteMany({})
+  AccountInfo.deleteMany({})
     .then(data => {
       res.send({
         message: `${data.deletedCount} Tutorials were deleted successfully!`
@@ -151,7 +151,7 @@ exports.deleteAll = (req, res) => {
 
 // Find all published Tutorials
 exports.findAllActivated = (req, res) => {
-  Tutorial.find({ activeStatus: true })
+  AccountInfo.find({ activeStatus: true })
     .then(data => {
       res.send(data);
     })

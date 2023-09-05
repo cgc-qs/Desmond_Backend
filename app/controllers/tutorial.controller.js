@@ -4,16 +4,22 @@ const Tutorial = db.tutorials;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
+  if (!req.body.brokerName) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
   // Create a Tutorial
   const tutorial = new Tutorial({
-    title: req.body.title,
-    description: req.body.description,
-    published: req.body.published ? req.body.published : false
+    brokerName: req.body.brokerName,
+    accountNumber: req.body.accountNumber,
+    currentEquity: req.body.currentEquity,
+    threshold: req.body.threshold,
+    topUpAmount: req.body.topUpAmount,
+    activeStatus: req.body.activeStatus ? req.body.activeStatus : false,
+    totalSwap: req.body.totalSwap,
+    longSwap: req.body.longSwap,
+    shortSwap: req.body.shortSwap
   });
 
   // Save Tutorial in the database
@@ -32,8 +38,23 @@ exports.create = (req, res) => {
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
+  const bName = req.query.brokerName;
+  const accNum = req.query.accountNumber;
+
+  var condition = {};
+
+  if (bName && accNum) {
+    condition = {
+      brokerName: { $regex: new RegExp(bName), $options: "i" },
+      accountNumber: accNum
+    };
+  }
+  else if (bName && !accNum)
+    condition = { brokerName: { $regex: new RegExp(bName), $options: "i" } };
+  else if (!bName && accNum)
+    condition = {
+      accountNumber: accNum
+    };
 
   Tutorial.find(condition)
     .then(data => {
@@ -129,8 +150,8 @@ exports.deleteAll = (req, res) => {
 };
 
 // Find all published Tutorials
-exports.findAllPublished = (req, res) => {
-  Tutorial.find({ published: true })
+exports.findAllActivated = (req, res) => {
+  Tutorial.find({ activeStatus: true })
     .then(data => {
       res.send(data);
     })

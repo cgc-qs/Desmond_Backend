@@ -65,7 +65,7 @@ exports.findAll = (req, res) => {
   const bName = req.query.brokerName;
   const accNum = req.query.accountNumber;
   if (!this.verifyToken(req)) {
-    res.status(401).send({ message: "Invalid Token" });
+    res.status(500).send({ message: "Invalid Token" });
     return;
   }
   var condition = {};
@@ -89,7 +89,7 @@ exports.findAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while finding acountInfos."
       });
     });
 };
@@ -213,7 +213,8 @@ exports.findAllActivated = (req, res) => {
 exports.verifyToken = (req) => {
   const token_ = req.headers.authorization;
   const _token = token.GetToken();
-  if (token_ == null)
+  //console.log(token_, "======", _token)
+  if (token_ === null)
     return false;
   if (token_ !== _token)
     return false;

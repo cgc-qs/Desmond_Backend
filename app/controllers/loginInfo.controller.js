@@ -52,6 +52,7 @@ exports.login = (req, res) => {
         .then(data => {
             if (data.length > 0) {
                 var Token = require('crypto').randomBytes(64).toString('hex');
+                //console.log("_____", Token);
                 token.SetToken(Token);
                 res.status(200).send({
                     message:

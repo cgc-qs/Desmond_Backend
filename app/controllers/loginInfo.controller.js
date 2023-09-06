@@ -47,13 +47,17 @@ exports.login = (req, res) => {
 
     var condition = name ? condition1 : condition2;
 
+
     LoginInfo.find(condition)
         .then(data => {
-            if (data.length > 0)
+            if (data.length > 0) {
+                var Token = require('crypto').randomBytes(64).toString('hex');
                 res.status(200).send({
                     message:
-                        "Login Success"
+                        "Login Success",
+                    token: Token
                 });
+            }
             else
                 res.status(404).send({
                     message:

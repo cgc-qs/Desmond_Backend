@@ -4,7 +4,7 @@ const token = require("./variable");
 
 
 // Create and Save a new AccountInfo
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   // Validate request
   if (!req.body.brokerName) {
     res.status(400).send({ message: "Content can not be empty!" });
@@ -13,6 +13,24 @@ exports.create = (req, res) => {
 
   if (!this.verifyToken(req)) {
     res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
+
+  var _brokerName = req.body.brokerName;
+  var _accountNumber = req.body.accountNumber;
+  var condition = {
+    brokerName: { $regex: new RegExp(_brokerName), $options: "i" },
+    accountNumber: _accountNumber
+  };
+
+  var count = 0;
+
+  await AccountInfo.find(condition)
+    .then(data => {
+      count = data.length;
+    })
+  if (count > 0) {
+    res.status(401).send({ message: "This is exist already" });
     return;
   }
   // Create a AccountInfo

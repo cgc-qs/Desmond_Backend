@@ -1,6 +1,6 @@
 const db = require("../models");
 const LoginInfo = db.loginInfo;
-
+const token = require("./variable");
 exports.signUp = (req, res) => {
 
     // Validate request
@@ -52,6 +52,7 @@ exports.login = (req, res) => {
         .then(data => {
             if (data.length > 0) {
                 var Token = require('crypto').randomBytes(64).toString('hex');
+                token.SetToken(Token);
                 res.status(200).send({
                     message:
                         "Login Success",

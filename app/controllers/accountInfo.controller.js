@@ -1,5 +1,7 @@
 const db = require("../models");
 const AccountInfo = db.accountInfo;
+const token = require("./variable");
+
 
 // Create and Save a new AccountInfo
 exports.create = (req, res) => {
@@ -9,6 +11,10 @@ exports.create = (req, res) => {
     return;
   }
 
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
   // Create a AccountInfo
   const account = new AccountInfo({
     brokerName: req.body.brokerName,
@@ -40,9 +46,11 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   const bName = req.query.brokerName;
   const accNum = req.query.accountNumber;
-
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
   var condition = {};
-
   if (bName && accNum) {
     condition = {
       brokerName: { $regex: new RegExp(bName), $options: "i" },
@@ -71,6 +79,10 @@ exports.findAll = (req, res) => {
 // Find a single AccountInfo with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
 
   AccountInfo.findById(id)
     .then(data => {
@@ -91,6 +103,10 @@ exports.update = (req, res) => {
     return res.status(400).send({
       message: "Data to update can not be empty!"
     });
+  }
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
   }
 
   const id = req.params.id;
@@ -114,6 +130,11 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
+
   AccountInfo.findByIdAndRemove(id, { useFindAndModify: false })
     .then(data => {
       if (!data) {
@@ -135,6 +156,10 @@ exports.delete = (req, res) => {
 
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
   AccountInfo.deleteMany({})
     .then(data => {
       res.send({
@@ -151,6 +176,10 @@ exports.deleteAll = (req, res) => {
 
 // Find all published Tutorials
 exports.findAllActivated = (req, res) => {
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
   AccountInfo.find({ activeStatus: true })
     .then(data => {
       res.send(data);
@@ -162,3 +191,14 @@ exports.findAllActivated = (req, res) => {
       });
     });
 };
+
+exports.verifyToken = (req) => {
+  const token_ = req.headers.authorization;
+  const _token = token.GetToken();
+  if (token_ == null)
+    return false;
+  if (token_ !== _token)
+    return false;
+  else
+    return true;
+}

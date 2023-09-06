@@ -6,7 +6,7 @@ module.exports = app => {
   // SignUp
   router.post("/signUp", loginInfo.signUp);
   // Login
-  router.get("/login", loginInfo.login);
+  router.post("/login", loginInfo.login);
 
   // Create a new Tutorial
   router.post("/", AccountInfo.create);

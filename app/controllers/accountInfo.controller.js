@@ -114,7 +114,30 @@ exports.findOne = (req, res) => {
         .send({ message: "Error retrieving AccountInfo with id=" + id });
     });
 };
+exports.sendAlert = (req, res) => {
+  const id = req.params.id;
+  if (!this.verifyToken(req)) {
+    res.status(401).send({ message: "Invalid Token" });
+    return;
+  }
+  AccountInfo.findById(id)
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found AccountInfo with id " + id });
+      else {
 
+        res.send({ message: "Alert is success with id=" + id });
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error send Alert with id=" + id });
+    });
+
+
+
+}
 // Update a AccountInfo by the id in the request
 exports.update = (req, res) => {
   if (!req.body) {

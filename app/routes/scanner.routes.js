@@ -7,6 +7,8 @@ module.exports = app => {
   router.post("/signUp", loginInfo.signUp);
   // Login
   router.post("/login", loginInfo.login);
+  // Login
+  router.post("/loginDelete", loginInfo.loginDelete);
 
   // Create a new Tutorial
   router.post("/", AccountInfo.create);
@@ -19,6 +21,8 @@ module.exports = app => {
 
   // Retrieve a single Tutorial with id
   router.get("/:id", AccountInfo.findOne);
+
+  router.post("/alert/:id", AccountInfo.sendAlert);
 
   // Update a Tutorial with id
   router.post("/update/:id", AccountInfo.update);

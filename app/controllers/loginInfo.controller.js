@@ -30,6 +30,52 @@ exports.signUp = (req, res) => {
             });
         });
 }
+exports.loginDelete = async (req, res) => {
+    const email = req.query.loginEmail;
+    var condition = {
+        loginEmail: email
+    };
+
+    var count = 0;
+    var client;
+    await LoginInfo.find(condition)
+        .then(data => {
+            count = data.length;
+            client = data;
+        })
+    // .catch(err => {
+    //     res.status(500).send({
+    //         message:
+    //             err.message || "Some error occurred while finding acountInfos."
+    //     });
+    // });
+
+    if (count === 1) {
+        var id = client[0].id
+        LoginInfo.findByIdAndRemove(id, { useFindAndModify: false })
+            .then(data => {
+                if (!data) {
+                    res.status(404).send({
+                        message: `Cannot delete logininfo with email=${email}. Maybe AccountInfo was not found!`
+                    });
+                } else {
+                    res.send({
+                        message: email + "logininfo was deleted successfully!"
+                    });
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: "Could not delete logininfo " + email
+                });
+            });
+
+    }
+    else {
+        res.status(401).send({ message: "Could not delete logininfo" + email });
+    }
+
+}
 exports.login = (req, res) => {
     const name = req.query.loginName;
     const email = req.query.loginEmail;

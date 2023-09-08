@@ -38,12 +38,13 @@ exports.create = async (req, res) => {
     brokerName: req.body.brokerName,
     accountNumber: req.body.accountNumber,
     currentEquity: req.body.currentEquity,
-    threshold: req.body.threshold,
-    topUpAmount: req.body.topUpAmount,
+    threshold: req.body.threshold ? req.body.threshold : 0,
+    topUpAmount: req.body.topUpAmount ? req.body.topUpAmount : 0,
     activeStatus: req.body.activeStatus ? req.body.activeStatus : false,
     totalSwap: req.body.totalSwap,
     longSwap: req.body.longSwap,
-    shortSwap: req.body.shortSwap
+    shortSwap: req.body.shortSwap,
+    alertChecked: req.body.alertChecked ? req.body.alertChecked : false
   });
 
   // Save AccountInfo in the database
@@ -125,8 +126,8 @@ exports.sendAlert = (req, res) => {
       if (!data)
         res.status(404).send({ message: "Not found AccountInfo with id " + id });
       else {
-
-        res.send({ message: "Alert is success with id=" + id });
+        // console.log(data);
+        res.send({ message: "Alert is success =>" + data.brokerName + ":" + data.accountNumber });
       }
     })
     .catch(err => {

@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const alert = require("./alert");
+const reset_Amount = 1000;
 
 const app = express();
 
@@ -39,6 +41,13 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/scanner.routes")(app);
+
+
+const interval = setInterval(() => {
+  alert.alertProcess(reset_Amount);
+}, 1000);
+
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

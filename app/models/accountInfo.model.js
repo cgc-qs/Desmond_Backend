@@ -9,7 +9,8 @@ module.exports = mongoose => {
       activeStatus: Boolean,
       totalSwap: Number,
       longSwap: Number,
-      shortSwap: Number
+      shortSwap: Number,
+      alertChecked: Boolean,
     },
     { timestamps: true }
   );

@@ -6,8 +6,8 @@ const reset_Amount = 1000;
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     host: "smtp.gmail.com",
-    port: 465,
-    secure: false,
+    //port: 465,
+    //secure: false,
     // secureConnection: false,
     // tls: {
     //     rejectUnauthorized: false,

@@ -3,6 +3,7 @@ const AccountInfo = db.accountInfo;
 var nodemailer = require('nodemailer');
 
 const reset_Amount = 1000;
+
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     host: "smtp.gmail.com",
@@ -14,8 +15,8 @@ var transporter = nodemailer.createTransport({
     // },
     // requireTLS: true,
     auth: {
-        user: 'brodybbdd@gmail.com',//'brodybbdd@gmail.com',//'youremail@gmail.com',
-        pass: 'unxcfgnnpqrrdckw',//'Brody123.'//'yourpassword'
+        user: 'brodybbdd@gmail.com',
+        pass: 'unxcfgnnpqrrdckw',
     },
     // connectionTimeout: 5 * 60 * 1000,//5min
     //logger: true,
@@ -23,10 +24,10 @@ var transporter = nodemailer.createTransport({
 });
 
 var mailOptions = {
-    from: 'brodybbdd@gmail.com',//'brodybbdd@gmail.com',//'youremail@gmail.com',
-    to: 'paulChoe31@gmail.com',//'myfriend@yahoo.com, myotherfriend@yahoo.com',
-    subject: 'The Email test',
-    text: 'The current equity is reached at threshold'
+    from: 'brodybbdd@gmail.com',
+    to: 'myfriend@yahoo.com, myotherfriend@yahoo.com',
+    subject: 'The Threshold Notification',
+    text: 'The current equity was reached at threshold'
 };
 
 exports.sendEmail = async () => {
@@ -75,7 +76,7 @@ exports.alertProcess = async () => {
                 .then(data => {
                     console.log("----", original[i].brokerName, " <alertchecked> is updated by threshold");
                 })
-                
+
                 var sent = await this.sendEmail();
                 if (sent) {
                     console.log('------Email is sent: ',mailOptions.text);                   

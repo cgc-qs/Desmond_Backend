@@ -51,12 +51,15 @@ exports.alertProcess = async () => {
         })
     if (original.length > 0) {
         for (let i = 0; i < original.length; i++) {
-
-            var dataUpdated = false;
+          
             var id = original[i].id;
+
             if (original[i].currentEquity > original[i].threshold + reset_Amount && original[i].alertChecked) {
                 original[i].alertChecked = false;
-                dataUpdated = true;
+                await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
+                .then(data => {
+                    console.log("----", original[i].brokerName, " <alertchecked> is updated by reset");
+                })
             }
 
             if (original[i].currentEquity < original[i].threshold && !original[i].alertChecked) {
@@ -66,30 +69,19 @@ exports.alertProcess = async () => {
                     "threshold: "+original[i].threshold+ "\n" +
                     "current Equity: "+original[i].currentEquity;
                 console.log("Trying sending of email ... ...");
-
+                
+                original[i].alertChecked = true;
+                await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
+                .then(data => {
+                    console.log("----", original[i].brokerName, " <alertchecked> is updated by threshold");
+                })
+                
                 var sent = await this.sendEmail();
                 if (sent) {
-                    console.log('------Email is sent: ',mailOptions.text);
-                    dataUpdated = true;
-                    original[i].alertChecked = true;
+                    console.log('------Email is sent: ',mailOptions.text);                   
                 }
-
-                // transporter.sendMail(mailOptions, function (error, info) {
-                //     if (error) {
-                //         console.log(error);
-                //     } else {
-                //         console.log('------Email sent: ' + info.response);
-                //         dataUpdated = true;
-                //         original[i].alertChecked = true;
-                //     }
-                // });
             }
-            if (dataUpdated) {
-                AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                    .then(data => {
-                        console.log("----", original[i].brokerName, " <alertchecked> is updated");
-                    })
-            }
+         
         }
     }
 }

@@ -18,8 +18,8 @@ var transporter = nodemailer.createTransport({
         pass: 'unxcfgnnpqrrdckw',//'Brody123.'//'yourpassword'
     },
     // connectionTimeout: 5 * 60 * 1000,//5min
-    logger: true,
-    debug: true
+    //logger: true,
+    //debug: true
 });
 
 var mailOptions = {
@@ -33,9 +33,11 @@ exports.sendEmail = async () => {
     try {
         const info = await transporter.sendMail(mailOptions);
         console.log("== Email is sent", info.messageId);
+        return true;
     }
     catch (error) {
         console.error("Error sending email:", error);
+        return false;
     }
 }
 
@@ -53,31 +55,39 @@ exports.alertProcess = async () => {
             var dataUpdated = false;
             var id = original[i].id;
             if (original[i].currentEquity > original[i].threshold + reset_Amount && original[i].alertChecked) {
-                original[i].alertChecked = false; dataUpdated = true;
+                original[i].alertChecked = false;
+                dataUpdated = true;
             }
 
             if (original[i].currentEquity < original[i].threshold && !original[i].alertChecked) {
                 // alert process here
                 mailOptions.text = "BrokerName: " + original[i].brokerName + "\n" +
-                    "accountNumber: " + original[i].accountNumber;
-                console.log("********", mailOptions.text);
+                    "accountNumber: " + original[i].accountNumber+ "\n" +
+                    "threshold: "+original[i].threshold+ "\n" +
+                    "current Equity: "+original[i].currentEquity;
+                console.log("Trying sending of email ... ...");
 
-                await sendmail();
+                var sent = await this.sendEmail();
+                if (sent) {
+                    console.log('------Email is sent: ',mailOptions.text);
+                    dataUpdated = true;
+                    original[i].alertChecked = true;
+                }
 
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log('------Email sent: ' + info.response);
-                        dataUpdated = true;
-                        original[i].alertChecked = true;
-                    }
-                });
+                // transporter.sendMail(mailOptions, function (error, info) {
+                //     if (error) {
+                //         console.log(error);
+                //     } else {
+                //         console.log('------Email sent: ' + info.response);
+                //         dataUpdated = true;
+                //         original[i].alertChecked = true;
+                //     }
+                // });
             }
             if (dataUpdated) {
                 AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
                     .then(data => {
-                        console.log("====== ", original[i].brokerName, " alert checked is updated");
+                        console.log("----", original[i].brokerName, " <alertchecked> is updated");
                     })
             }
         }

@@ -6,7 +6,7 @@ const alert = require("./alert");
 const app = express();
 
 var corsOptions = {
-  origin: ['http://0.0.0.0:8081', 'http://0.0.0.0:3000'],
+  origin: ['*'],
   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
   // allowedHeaders: [
   //   'Content-Type',

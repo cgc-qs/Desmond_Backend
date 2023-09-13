@@ -3,6 +3,7 @@ const AccountInfo = db.accountInfo;
 var nodemailer = require('nodemailer');
 
 const reset_Amount = 1000;
+const active_scan_second=30;
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -81,6 +82,16 @@ exports.alertProcess = async () => {
                 if (sent) {
                     console.log('------Email is sent: ',mailOptions.text);                   
                 }
+            }
+
+            let now=new Date();
+            if(now-original[i].updatedAt>active_scan_second*1000 && original[i].activeStatus)
+            {
+                original[i].activeStatus=false;
+                await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
+                .then(data => {
+                    console.log("----", original[i].brokerName, " <activeStatus> is updated ");
+                })
             }
          
         }

@@ -1,11 +1,34 @@
 const db = require("../models");
 const LoginInfo = db.loginInfo;
 const token = require("./variable");
-exports.signUp = (req, res) => {
+exports.signUp =async (req, res) => {
 
     // Validate request
     if (!req.body.loginName && !req.body.loginEmail) {
         res.status(400).send({ message: "Content can not be empty!" });
+        return;
+    }
+
+    var condition1 = {
+        loginName: req.body.loginName
+    };
+    var condition2 = {
+        loginEmail: req.body.loginEmail
+    };
+
+    var count1 = 0,count2=0;
+
+    await LoginInfo.find(condition1)
+        .then(data => {
+            count1 = data.length;
+        })
+    await LoginInfo.find(condition2)
+        .then(data => {
+            count2 = data.length;
+        })
+
+    if (count1 > 0 || count2>0) {
+        res.status(401).send({ message: "This account is exist already" });
         return;
     }
 

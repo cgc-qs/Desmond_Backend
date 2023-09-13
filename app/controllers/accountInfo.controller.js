@@ -24,13 +24,14 @@ exports.create = async (req, res) => {
   };
 
   var count = 0;
-
+  var client;
   await AccountInfo.find(condition)
     .then(data => {
       count = data.length;
+      client=data;
     })
   if (count > 0) {
-    res.status(401).send({ message: "This is exist already" });
+    res.status(401).send({ message: "This is exist already" ,id:client[0].id});
     return;
   }
   // Create a AccountInfo

@@ -1,8 +1,8 @@
 const db = require("../models");
 const LoginInfo = db.loginInfo;
 const token = require("./variable");
-exports.signUp =async (req, res) => {
-
+exports.signUp =async (req, res) => {    
+ 
     // Validate request
     if (!req.body.loginName && !req.body.loginEmail) {
         res.status(400).send({ message: "Content can not be empty!" });
@@ -18,6 +18,7 @@ exports.signUp =async (req, res) => {
 
     var count1 = 0,count2=0;
 
+    
     await LoginInfo.find(condition1)
         .then(data => {
             count1 = data.length;
@@ -26,7 +27,7 @@ exports.signUp =async (req, res) => {
         .then(data => {
             count2 = data.length;
         })
-
+    
     if (count1 > 0 || count2>0) {
         res.status(401).send({ message: "This account is exist already" });
         return;

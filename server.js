@@ -6,11 +6,7 @@ const alert = require("./alert");
 const app = express();
 
 var corsOptions = {
-  origin: ['*'],
-  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-  // allowedHeaders: [
-  //   'Content-Type',
-  // ]
+  origin:'*'
 };
 
 app.use(cors(corsOptions));

@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
   var _brokerName = req.body.brokerName;
   var _accountNumber = req.body.accountNumber;
   var condition = {
-    brokerName: { $regex: new RegExp(_brokerName), $options: "i" },
+    brokerName: _brokerName,
     accountNumber: _accountNumber
   };
 
@@ -72,12 +72,12 @@ exports.findAll = (req, res) => {
   var condition = {};
   if (bName && accNum) {
     condition = {
-      brokerName: { $regex: new RegExp(bName), $options: "i" },
+      brokerName: bName,
       accountNumber: accNum
     };
   }
   else if (bName && !accNum)
-    condition = { brokerName: { $regex: new RegExp(bName), $options: "i" } };
+    condition = { brokerName: bName };
   else if (!bName && accNum)
     condition = {
       accountNumber: accNum

@@ -3,7 +3,7 @@ const AccountInfo = db.accountInfo;
 var nodemailer = require('nodemailer');
 
 const reset_Amount = 1000;
-const active_scan_second=30;
+const active_scan_second = 30;
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -26,7 +26,7 @@ var transporter = nodemailer.createTransport({
 
 var mailOptions = {
     from: 'brodybbdd@gmail.com',
-    to: 'myfriend@yahoo.com, myotherfriend@yahoo.com',
+    to: 'eugeneozy@gmail.com, rextoo1992@gmail.com, neuron9801@gmail.com, desmondgiam@gmail.com',
     subject: 'The Threshold Notification',
     text: 'The current equity was reached at threshold'
 };
@@ -53,47 +53,46 @@ exports.alertProcess = async () => {
         })
     if (original.length > 0) {
         for (let i = 0; i < original.length; i++) {
-          
+
             var id = original[i].id;
 
             if (original[i].currentEquity > original[i].threshold + reset_Amount && original[i].alertChecked) {
                 original[i].alertChecked = false;
                 await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                .then(data => {
-                    console.log("----", original[i].brokerName, " <alertchecked> is updated by reset");
-                })
+                    .then(data => {
+                        console.log("----", original[i].brokerName, " <alertchecked> is updated by reset");
+                    })
             }
 
             if (original[i].currentEquity < original[i].threshold && !original[i].alertChecked) {
                 // alert process here
                 mailOptions.text = "BrokerName: " + original[i].brokerName + "\n" +
-                    "accountNumber: " + original[i].accountNumber+ "\n" +
-                    "threshold: "+original[i].threshold+ "\n" +
-                    "current Equity: "+original[i].currentEquity;
+                    "accountNumber: " + original[i].accountNumber + "\n" +
+                    "threshold: " + original[i].threshold + "\n" +
+                    "current Equity: " + original[i].currentEquity;
                 console.log("Trying sending of email ... ...");
-                
+
                 original[i].alertChecked = true;
                 await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                .then(data => {
-                    console.log("----", original[i].brokerName, " <alertchecked> is updated by threshold");
-                })
+                    .then(data => {
+                        console.log("----", original[i].brokerName, " <alertchecked> is updated by threshold");
+                    })
 
                 var sent = await this.sendEmail();
                 if (sent) {
-                    console.log('------Email is sent: ',mailOptions.text);                   
+                    console.log('------Email is sent: ', mailOptions.text);
                 }
             }
 
-            let now=new Date();
-            if(now-original[i].updatedAt>active_scan_second*1000 && original[i].activeStatus)
-            {
-                original[i].activeStatus=false;
+            let now = new Date();
+            if (now - original[i].updatedAt > active_scan_second * 1000 && original[i].activeStatus) {
+                original[i].activeStatus = false;
                 await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                .then(data => {
-                    console.log("----", original[i].brokerName, " <activeStatus> is updated ");
-                })
+                    .then(data => {
+                        console.log("----", original[i].brokerName, " <activeStatus> is updated ");
+                    })
             }
-         
+
         }
     }
 }

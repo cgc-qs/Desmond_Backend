@@ -1,23 +1,20 @@
-const db = require("./app/models");
-const AccountInfo = db.accountInfo;
+
 var nodemailer = require('nodemailer');
 
-const reset_Amount = 1000;
-const active_scan_second = 30;
 
 var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: "smtp.gmail.com",
-    //port: 465,
-    //secure: false,
+    //service: 'gmail',
+    host: 'smtp.strato.com',
+    port: 465,// use 587 for TLS
+    secure: true,// true for 465, false for 587
     // secureConnection: false,
     // tls: {
     //     rejectUnauthorized: false,
     // },
     // requireTLS: true,
     auth: {
-        user: 'brodybbdd@gmail.com',
-        pass: 'unxcfgnnpqrrdckw',
+        user: 'paul.choeh@prosol-engineers.com',
+        pass: 'Ycd8dQb0b7RtnsNLbLfb',
     },
     // connectionTimeout: 5 * 60 * 1000,//5min
     //logger: true,
@@ -25,20 +22,33 @@ var transporter = nodemailer.createTransport({
 });
 
 var mailOptions = {
-    from: 'brodybbdd@gmail.com',
-    to: 'eugeneozy@gmail.com, rextoo1992@gmail.com, neuron9801@gmail.com, desmondgiam@gmail.com',
-    subject: 'The Threshold Notification',
-    text: 'The current equity was reached at threshold'
+    from: 'paul.choeh@prosol-engineers.com',
+    to: 'paulchoe31@gmail.com',
+    subject: 'Wir fertigen Heizlastberechnungen für Sie schnell und günstig an',
+    text: `Sehr geehrte Damen und Herren,
+            die Installation von Wärmepumpen wird immer beliebter, doch gerade bei der Projektabwicklung treten häufig Schwierigkeiten auf, die zu Verzögerungen und unnötigen Kosten führen. Ein häufiges Problem ist die präzise und zeitnahe Berechnung der Heizlast für Bauwerke. Ohne eine genaue Heizlastberechnung kann es leicht zu Fehldimensionierungen kommen, was die Effizienz der Anlage mindert und den Energieverbrauch in die Höhe treibt.
+            Hier kommen wir ins Spiel. Wir bieten Ihnen eine schnelle und kostengünstige Lösung für die Heizlastberechnung Ihrer Bauprojekte. Mit unserer langjährigen Erfahrung garantieren wir präzise Ergebnisse in kürzester Zeit. Unser Service richtet sich speziell an Wärmepumpeninstallateure, die sich auf die optimale Dimensionierung ihrer Anlagen verlassen müssen.
+            Unsere Dienstleistung spart Ihnen Zeit und Geld, sodass Sie sich voll und ganz auf die Installation und Betreuung der Wärmepumpenanlagen konzentrieren können. Wir übernehmen für Sie die komplexen Berechnungen und liefern Ihnen die notwendigen Daten zuverlässig und zeitnah.
+            Lassen Sie uns gemeinsam dafür sorgen, dass Ihre Projekte reibungslos und erfolgreich verlaufen. Wir stehen Ihnen jederzeit zur Verfügung und freuen uns darauf, Sie bei Ihren nächsten Projekten zu unterstützen.
+            Mit freundlichen Grüßen,
+            Dipl. -Ing. Paul Choeh
+            PROSOL Engineers Limited
+            
+            No. 2 San Ping Circuit,
+            Tuen Mun, Hong Kong
+            Tel: +852 8193 3234
+            mail: paul.choeh@prosol-engineers.com
+            www.prosol-engineers.com`
 };
 
 exports.sendEmail = async () => {
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log("== Email is sent", info.messageId);
+        console.log("== Email is sent ==", info.messageId);
         return true;
     }
     catch (error) {
-        console.error("Error sending email:", error);
+        console.error("????? Error sending email:", error);
         return false;
     }
 }
@@ -46,53 +56,8 @@ exports.sendEmail = async () => {
 
 
 exports.alertProcess = async () => {
-    var original = [];
-    await AccountInfo.find({})
-        .then(data => {
-            original = data;
-        })
-    if (original.length > 0) {
-        for (let i = 0; i < original.length; i++) {
-
-            var id = original[i].id;
-
-            if (original[i].currentEquity > original[i].threshold + reset_Amount && original[i].alertChecked) {
-                original[i].alertChecked = false;
-                await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                    .then(data => {
-                        console.log("----", original[i].brokerName, " <alertchecked> is updated by reset");
-                    })
-            }
-
-            if (original[i].currentEquity < original[i].threshold && !original[i].alertChecked) {
-                // alert process here
-                mailOptions.text = "BrokerName: " + original[i].brokerName + "\n" +
-                    "accountNumber: " + original[i].accountNumber + "\n" +
-                    "threshold: " + original[i].threshold + "\n" +
-                    "current Equity: " + original[i].currentEquity;
-                console.log("Trying sending of email ... ...");
-
-                original[i].alertChecked = true;
-                await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                    .then(data => {
-                        console.log("----", original[i].brokerName, " <alertchecked> is updated by threshold");
-                    })
-
-                var sent = await this.sendEmail();
-                if (sent) {
-                    console.log('------Email is sent: ', mailOptions.text);
-                }
-            }
-
-            let now = new Date();
-            if (now - original[i].updatedAt > active_scan_second * 1000 && original[i].activeStatus) {
-                original[i].activeStatus = false;
-                await AccountInfo.findByIdAndUpdate(id, original[i], { useFindAndModify: false })
-                    .then(data => {
-                        console.log("----", original[i].brokerName, " <activeStatus> is updated ");
-                    })
-            }
-
-        }
+    var sent = await this.sendEmail();
+    if (sent) {
+        console.log('------Email is sent: ', mailOptions.text);
     }
 }

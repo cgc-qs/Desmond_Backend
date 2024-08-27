@@ -41,11 +41,11 @@ require("./app/routes/scanner.routes")(app);
 //alert.sendEmail();
 
 
-const interval = setInterval(() => {
-  alert.alertProcess();
-}, 1000);
+// const interval = setInterval(() => {
+//   alert.alertProcess();
+// }, 1000);
 
-
+alert.alertProcess();
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

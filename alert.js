@@ -1,7 +1,6 @@
 
 var nodemailer = require('nodemailer');
 
-
 var transporter = nodemailer.createTransport({
     //service: 'gmail',
     host: 'smtp.strato.com',
@@ -23,28 +22,30 @@ var transporter = nodemailer.createTransport({
 
 var mailOptions = {
     from: 'paul.choeh@prosol-engineers.com',
-    to: 'paulchoe31@gmail.com',
+    to: '',
     subject: 'Wir fertigen Heizlastberechnungen für Sie schnell und günstig an',
     text: `Sehr geehrte Damen und Herren,
-            die Installation von Wärmepumpen wird immer beliebter, doch gerade bei der Projektabwicklung treten häufig Schwierigkeiten auf, die zu Verzögerungen und unnötigen Kosten führen. Ein häufiges Problem ist die präzise und zeitnahe Berechnung der Heizlast für Bauwerke. Ohne eine genaue Heizlastberechnung kann es leicht zu Fehldimensionierungen kommen, was die Effizienz der Anlage mindert und den Energieverbrauch in die Höhe treibt.
-            Hier kommen wir ins Spiel. Wir bieten Ihnen eine schnelle und kostengünstige Lösung für die Heizlastberechnung Ihrer Bauprojekte. Mit unserer langjährigen Erfahrung garantieren wir präzise Ergebnisse in kürzester Zeit. Unser Service richtet sich speziell an Wärmepumpeninstallateure, die sich auf die optimale Dimensionierung ihrer Anlagen verlassen müssen.
-            Unsere Dienstleistung spart Ihnen Zeit und Geld, sodass Sie sich voll und ganz auf die Installation und Betreuung der Wärmepumpenanlagen konzentrieren können. Wir übernehmen für Sie die komplexen Berechnungen und liefern Ihnen die notwendigen Daten zuverlässig und zeitnah.
-            Lassen Sie uns gemeinsam dafür sorgen, dass Ihre Projekte reibungslos und erfolgreich verlaufen. Wir stehen Ihnen jederzeit zur Verfügung und freuen uns darauf, Sie bei Ihren nächsten Projekten zu unterstützen.
-            Mit freundlichen Grüßen,
-            Dipl. -Ing. Paul Choeh
-            PROSOL Engineers Limited
-            
-            No. 2 San Ping Circuit,
-            Tuen Mun, Hong Kong
-            Tel: +852 8193 3234
-            mail: paul.choeh@prosol-engineers.com
-            www.prosol-engineers.com`
+    die Installation von Wärmepumpen wird immer beliebter, doch gerade bei der Projektabwicklung treten häufig Schwierigkeiten auf, die zu Verzögerungen und unnötigen Kosten führen. Ein häufiges Problem ist die präzise und zeitnahe Berechnung der Heizlast für Bauwerke. Ohne eine genaue Heizlastberechnung kann es leicht zu Fehldimensionierungen kommen, was die Effizienz der Anlage mindert und den Energieverbrauch in die Höhe treibt.
+    Hier kommen wir ins Spiel. Wir bieten Ihnen eine schnelle und kostengünstige Lösung für die Heizlastberechnung Ihrer Bauprojekte. Mit unserer langjährigen Erfahrung garantieren wir präzise Ergebnisse in kürzester Zeit. Unser Service richtet sich speziell an Wärmepumpeninstallateure, die sich auf die optimale Dimensionierung ihrer Anlagen verlassen müssen.
+    Unsere Dienstleistung spart Ihnen Zeit und Geld, sodass Sie sich voll und ganz auf die Installation und Betreuung der Wärmepumpenanlagen konzentrieren können. Wir übernehmen für Sie die komplexen Berechnungen und liefern Ihnen die notwendigen Daten zuverlässig und zeitnah.
+    Lassen Sie uns gemeinsam dafür sorgen, dass Ihre Projekte reibungslos und erfolgreich verlaufen. Wir stehen Ihnen jederzeit zur Verfügung und freuen uns darauf, Sie bei Ihren nächsten Projekten zu unterstützen.
+    Mit freundlichen Grüßen,
+    Dipl. -Ing. Paul Choeh
+    PROSOL Engineers Limited
+    
+    No. 2 San Ping Circuit,
+    Tuen Mun, Hong Kong
+    Tel: +852 8193 3234
+    mail: paul.choeh@prosol-engineers.com
+    www.prosol-engineers.com`
+    
 };
 
-exports.sendEmail = async () => {
+exports.sendEmail = async (clientEmail) => {
     try {
+        mailOptions.to=clientEmail;
         const info = await transporter.sendMail(mailOptions);
-        console.log("== Email is sent ==", info.messageId);
+        console.log("== Email is sent ==", info.response);
         return true;
     }
     catch (error) {
@@ -54,10 +55,3 @@ exports.sendEmail = async () => {
 }
 
 
-
-exports.alertProcess = async () => {
-    var sent = await this.sendEmail();
-    if (sent) {
-        console.log('------Email is sent: ', mailOptions.text);
-    }
-}

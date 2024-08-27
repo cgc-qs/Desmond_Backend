@@ -41,12 +41,12 @@ var mailOptions = {
     
 };
 
-exports.sendEmail = async (clientEmail) => {
+exports.sendEmail = async (clientEmail,i) => {
     try {
         mailOptions.to=clientEmail;
         const info = await transporter.sendMail(mailOptions);
-        console.log("== Email is sent ==", info.response);
-
+        console.log("== Email is sent ==", info.response," => ",i," : ",clientEmail);
+     
         return true;
     }
     catch (error) {

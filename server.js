@@ -23,11 +23,17 @@ app.get("/", (req, res) => {
 });
 
 
-// const interval = setInterval(() => {
-//   alert.alertProcess();
-// }, 1000);
+Clinets=["paulchoe31@gmail.com","jracko35@gmail.com"];
 
-alert.sendEmail("paulchoe31@gmail.com");
+index=0;
+const interval = setInterval(() => {
+  if (index>=Clinets.length)
+    return;
+  alert.sendEmail(Clinets[index],index);
+  index+=1;
+}, 1*60*1000);
+
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

@@ -1,5 +1,18 @@
 
 var nodemailer = require('nodemailer');
+const imaps = require('imap-simple');
+const simpleParser = require('mailparser').simpleParser;
+
+// Email account credentials
+const imapConfig = {
+    imap: {
+        user: 'paul.choeh@prosol-engineers.com',
+        password: 'Ycd8dQb0b7RtnsNLbLfb',
+        host: 'imap.strato.com',
+        port: 993,
+        tls: true
+    }
+};
 
 var transporter = nodemailer.createTransport({
     //service: 'gmail',
@@ -46,6 +59,19 @@ exports.sendEmail = async (clientEmail) => {
         mailOptions.to=clientEmail;
         const info = await transporter.sendMail(mailOptions);
         console.log("== Email is sent ==", info.response);
+
+        // Now save the email to the "Sent" folder using IMAP
+        const connection = await imaps.connect(imapConfig);
+        await connection.openBox('Sent');  // Open the "Sent" folder
+
+        // Parse the email into a format suitable for IMAP
+        const parsedEmail = await simpleParser(info.response);
+
+        // Append the email to the "Sent" folder
+        await connection.append(parsedEmail.text, { mailbox: 'Sent', flags: ['Seen'] });
+
+        await connection.end();  // Close the IMAP connection
+
         return true;
     }
     catch (error) {

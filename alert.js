@@ -45,7 +45,7 @@ exports.sendEmail = async (clientEmail,i) => {
     try {
         mailOptions.to=clientEmail;
         const info = await transporter.sendMail(mailOptions);
-        console.log("== Email is sent ==", info.response," => ",i," : ",clientEmail);
+        console.log(`== ${new Date().toLocaleTimeString()} ==`, info.response," => ",i," : ",clientEmail);
      
         return true;
     }
